@@ -9,6 +9,8 @@ export interface Idea {
   key: string;
   content: string;
   createdAt: string;
+  updatedAt?: string;
+  tags?: string[];
 }
 
 function ensureStorage(): void {
@@ -35,14 +37,44 @@ function writeData(data: Record<string, Idea>): void {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-export function saveIdea(key: string, content: string): void {
+export function saveIdea(key: string, content: string, tags?: string[]): void {
   const data = readData();
   data[key] = {
     key,
     content,
     createdAt: new Date().toISOString(),
+    tags: tags || [],
   };
   writeData(data);
+}
+
+export function editIdea(key: string, content: string, tags?: string[]): boolean {
+  const data = readData();
+  if (!data[key]) return false;
+
+  data[key] = {
+    ...data[key],
+    content,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (tags) {
+    data[key].tags = tags;
+  }
+
+  writeData(data);
+  return true;
+}
+
+export function searchIdeas(query: string): Idea[] {
+  const data = readData();
+  const lowerQuery = query.toLowerCase();
+  return Object.values(data).filter((idea) => {
+    const inKey = idea.key.toLowerCase().includes(lowerQuery);
+    const inContent = idea.content.toLowerCase().includes(lowerQuery);
+    const inTags = idea.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery));
+    return inKey || inContent || inTags;
+  });
 }
 
 export function getIdea(key: string): Idea | undefined {

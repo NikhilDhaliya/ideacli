@@ -6,6 +6,8 @@ IdeaCLI is a high-performance, local-first command-line interface designed for t
 
 - **Persistent Storage**: Data is stored locally in a structured JSON format within the user's home directory (`~/.ideacli/ideas.json`).
 - **Low Latency**: Optimized for sub-second response times for all operations.
+- **Enhanced Search**: Quickly find ideas by key, content, or tags.
+- **Tagging Support**: Organize ideas with custom tags for better categorization.
 - **Minimalist Design**: Zero-dependency on external UI or cloud services.
 - **Typed Implementation**: Built using TypeScript for robust data handling.
 
@@ -32,15 +34,41 @@ IdeaCLI provides a set of commands to manage your personal ideas repository.
 
 ### Store an Idea
 
-Save a new idea by providing a unique key and the content.
+Save a new idea by providing a unique key and the content. You can also add optional tags.
 
 ```bash
-ideacli store <key> <content>
+ideacli store <key> <content> [--tags <tags>]
 ```
 
 Example:
 ```bash
-ideacli store "architecture-v1" "Switch to micro-frontends for better scalability."
+ideacli store "architecture-v1" "Switch to micro-frontends for better scalability." --tags "work,important"
+```
+
+### Edit an Idea
+
+Update the content or tags of an existing idea. This will also update the `updatedAt` timestamp.
+
+```bash
+ideacli edit <key> <new-content> [--tags <tags>]
+```
+
+Example:
+```bash
+ideacli edit "architecture-v1" "Switch to micro-frontends for better scalability and modularity."
+```
+
+### Search Ideas
+
+Search for ideas that match a query in the key, content, or tags.
+
+```bash
+ideacli search <query>
+```
+
+Example:
+```bash
+ideacli search "micro-frontends"
 ```
 
 ### Retrieve an Idea
